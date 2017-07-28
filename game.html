@@ -5,21 +5,35 @@
 var canvas;
 var canvasContext;
 var ballX = 50;
+var ballY = 50;
+var ballSpeedX = 10;
+var paddle1Y = 250;
+var paddle2Y = 250;
 
 window.onload = function() {
 	canvas = document.getElementById('gameCanvas');
 	canvasContext = canvas.getContext('2d');
+
+	var animate = window.requestAnimationFrame ||
+        	function(callback) { window.setTimeout(callback, 1000/60) };
 
 	var framesPerSecond = 30;
 	setInterval(function(){
 		movement();
 		render();
 	}, 1000/framesPerSecond);
+
 }
 
 function movement() {
-	ballX = ballX + 5;
-	console.log(ballX);
+	ballX = ballX + ballSpeedX;
+
+	if (ballX > canvas.width) {
+		ballSpeedX = -ballSpeedX;
+	}
+	if (ballX < 0) {
+		ballSpeedX = -ballSpeedX;
+	}
 }
 
 function render() {
@@ -29,7 +43,7 @@ function render() {
 
 	// left player paddle
 	canvasContext.fillStyle = 'white';
-	canvasContext.fillRect(10,200,10,100);
+	canvasContext.fillRect(10,paddle1Y,10,100);
 
 	// right computer paddle
 	canvasContext.fillStyle = 'white';
@@ -38,9 +52,33 @@ function render() {
 	// ball
 	canvasContext.fillStyle = 'white';
 	canvasContext.beginPath();
-	canvasContext.arc(ballX, 100, 10, 0, Math.PI*2, true);
+	canvasContext.arc(ballX, ballY, 10, 0, Math.PI*2, true);
 	canvasContext.fill();
 }
+
+window.addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+  switch (event.key) {
+    case "ArrowDown":
+      // Do something for "down arrow" key press.
+	if (paddle1Y+100 < canvas.height) {
+		paddle1Y = paddle1Y + 30;
+	};
+      break;
+    case "ArrowUp":
+	if (paddle1Y > 0) {
+		paddle1Y = paddle1Y - 30;
+	};
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+}, true);
 
 
 </script>
