@@ -4,8 +4,8 @@
 <script>
 var canvas;
 var canvasContext;
-var ballX = 50;
-var ballY = 50;
+var ballX = 400;
+var ballY = 300;
 var ballSpeedX = 10;
 var ballSpeedY = 10;
 var paddle1Y = 250;
@@ -35,11 +35,23 @@ function ballReset() {
 	ballY = canvas.height/2;
 }
 
-function movement() {
-	ballX = ballX + ballSpeedX;
-	ballY = ballY + ballSpeedY;
+function computerAI() {
+	var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT/2);
+	if (paddle2YCenter < ballY) {
+		paddle2Y += 9; 
+	} else {
+		paddle2Y -= 9;
+	}
+}
 
-	if (ballX > canvas.width) {
+
+function movement() {
+	computerAI();
+
+	ballX += ballSpeedX;
+	ballY += ballSpeedY;
+
+	if (ballX < 0) {
 		if (ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {	
 			ballSpeedX = -ballSpeedX;
 		} else {
@@ -47,8 +59,8 @@ function movement() {
 		}
 	}
 
-	if (ballX < 0) {
-		if (ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {	
+	if (ballX > canvas.width) {
+		if (ballY > paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT) {	
 			ballSpeedX = -ballSpeedX;
 		} else {
 			ballReset();
@@ -68,13 +80,13 @@ function render() {
 	canvasContext.fillStyle = 'black';
 	canvasContext.fillRect(0,0,canvas.width,canvas.height);
 
-	// left player paddle
+	// left player paddle1Y
 	canvasContext.fillStyle = 'white';
 	canvasContext.fillRect(0,paddle1Y,PADDLE_THICKNESS,PADDLE_HEIGHT);
 
-	// right computer paddle
+	// right computer paddle2Y
 	canvasContext.fillStyle = 'white';
-	canvasContext.fillRect(canvas.width-PADDLE_THICKNESS,200,PADDLE_THICKNESS,PADDLE_HEIGHT);
+	canvasContext.fillRect(canvas.width-PADDLE_THICKNESS,paddle2Y,PADDLE_THICKNESS,PADDLE_HEIGHT);
 
 	// ball
 	canvasContext.fillStyle = 'white';
@@ -84,27 +96,20 @@ function render() {
 }
 
 window.addEventListener("keydown", function (event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
   switch (event.key) {
     case "ArrowDown":
-      // Do something for "down arrow" key press.
 	if (paddle1Y+PADDLE_HEIGHT < canvas.height) {
-		paddle1Y = paddle1Y + 30;
+		paddle1Y += 50;
 	};
       break;
     case "ArrowUp":
 	if (paddle1Y > 0) {
-		paddle1Y = paddle1Y - 30;
+		paddle1Y -= 50;
 	};
       break;
     default:
-      return; // Quit when this doesn't handle the key event.
+      return;
   }
-
-  // Cancel the default action to avoid it being handled twice
-  event.preventDefault();
 }, true);
 
 
