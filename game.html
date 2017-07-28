@@ -1,4 +1,6 @@
 <html>
+<h1>Player 1 Score <span id="player1"></span> ------------------------------- Player 2 Score <span id="player2"></span></h1>
+
 <canvas id="gameCanvas" width="800" height ="600"></canvas>
 
 <script>
@@ -10,6 +12,9 @@ var ballSpeedX = 10;
 var ballSpeedY = 10;
 var paddle1Y = 250;
 var paddle2Y = 250;
+
+var player1Score = 0;
+var player2Score = 0;
 
 const PADDLE_THICKNESS = 10;
 const PADDLE_HEIGHT = 100;
@@ -27,9 +32,16 @@ window.onload = function() {
 		render();
 	}, 1000/framesPerSecond);
 
+	document.getElementById('player1').innerHTML = player1Score;
+	document.getElementById('player2').innerHTML = player2Score;
 }
 
 function ballReset() {
+	if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
+		player1Score = 0;
+		player2Score = 0;
+	}
+	
 	ballSpeedX = -ballSpeedX;
 	ballX = canvas.width/2;
 	ballY = canvas.height/2;
@@ -55,6 +67,8 @@ function movement() {
 		if (ballY > paddle1Y && ballY < paddle1Y+PADDLE_HEIGHT) {	
 			ballSpeedX = -ballSpeedX;
 		} else {
+			player2Score += 1;
+			document.getElementById('player2').innerHTML = player2Score;
 			ballReset();
 		}
 	}
@@ -63,6 +77,8 @@ function movement() {
 		if (ballY > paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT) {	
 			ballSpeedX = -ballSpeedX;
 		} else {
+			player1Score += 1;
+			document.getElementById('player1').innerHTML = player1Score;
 			ballReset();
 		}
 	}
@@ -114,4 +130,6 @@ window.addEventListener("keydown", function (event) {
 
 
 </script>
+
+
 </html>
