@@ -1,5 +1,6 @@
 <html>
-<h1>Player 1 Score <span id="player1"></span> ------------------------------- Player 2 Score <span id="player2"></span></h1>
+<h1>Player 1 <span id="player1"></span> ------------------------------- Player 2 <span id="player2"></span></h1>
+<h2><span id="refresh"></span></h2>
 
 <canvas id="gameCanvas" width="800" height ="600"></canvas>
 
@@ -15,6 +16,9 @@ var paddle2Y = 250;
 
 var player1Score = 0;
 var player2Score = 0;
+const WINNING_SCORE = 11;
+
+var showingWinScreen = false;
 
 const PADDLE_THICKNESS = 10;
 const PADDLE_HEIGHT = 100;
@@ -32,14 +36,23 @@ window.onload = function() {
 		render();
 	}, 1000/framesPerSecond);
 
-	document.getElementById('player1').innerHTML = player1Score;
-	document.getElementById('player2').innerHTML = player2Score;
+	document.getElementById('player1').innerHTML = 'Score ' + player1Score;
+	document.getElementById('player2').innerHTML = 'Score ' + player2Score;
 }
 
 function ballReset() {
-	if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
-		player1Score = 0;
-		player2Score = 0;
+	if (player1Score >= WINNING_SCORE) {
+		showingWinScreen = true;
+		document.getElementById('player1').innerHTML = 'WON!';
+		document.getElementById('player2').innerHTML = 'LOST!';
+		document.getElementById('refresh').innerHTML = 'Refresh your browser to Play Again';
+	}
+
+	if (player2Score >= WINNING_SCORE) {
+		showingWinScreen = true;
+		document.getElementById('player2').innerHTML = 'WON!';
+		document.getElementById('player1').innerHTML = 'LOST!';
+		document.getElementById('refresh').innerHTML = 'Refresh your browser to Play Again';
 	}
 	
 	ballSpeedX = -ballSpeedX;
@@ -58,6 +71,10 @@ function computerAI() {
 
 
 function movement() {
+	if (showingWinScreen){
+		return;
+	}
+
 	computerAI();
 
 	ballX += ballSpeedX;
@@ -68,7 +85,7 @@ function movement() {
 			ballSpeedX = -ballSpeedX;
 		} else {
 			player2Score += 1;
-			document.getElementById('player2').innerHTML = player2Score;
+			document.getElementById('player2').innerHTML = 'Score ' + player2Score;
 			ballReset();
 		}
 	}
@@ -78,7 +95,7 @@ function movement() {
 			ballSpeedX = -ballSpeedX;
 		} else {
 			player1Score += 1;
-			document.getElementById('player1').innerHTML = player1Score;
+			document.getElementById('player1').innerHTML = 'Score ' + player1Score;
 			ballReset();
 		}
 	}
@@ -92,6 +109,9 @@ function movement() {
 }
 
 function render() {
+	if (showingWinScreen){
+		return;
+	}
 	// table
 	canvasContext.fillStyle = 'black';
 	canvasContext.fillRect(0,0,canvas.width,canvas.height);
