@@ -1,0 +1,47 @@
+<html>
+<canvas id="gameCanvas" width="800" height ="600"></canvas>
+
+<script>
+var canvas;
+var canvasContext;
+var ballX = 50;
+
+window.onload = function() {
+	canvas = document.getElementById('gameCanvas');
+	canvasContext = canvas.getContext('2d');
+
+	var framesPerSecond = 30;
+	setInterval(function(){
+		movement();
+		render();
+	}, 1000/framesPerSecond);
+}
+
+function movement() {
+	ballX = ballX + 5;
+	console.log(ballX);
+}
+
+function render() {
+	// table
+	canvasContext.fillStyle = 'black';
+	canvasContext.fillRect(0,0,canvas.width,canvas.height);
+
+	// left player paddle
+	canvasContext.fillStyle = 'white';
+	canvasContext.fillRect(10,200,10,100);
+
+	// right computer paddle
+	canvasContext.fillStyle = 'white';
+	canvasContext.fillRect(canvas.width-20,200,10,100);
+
+	// ball
+	canvasContext.fillStyle = 'white';
+	canvasContext.beginPath();
+	canvasContext.arc(ballX, 100, 10, 0, Math.PI*2, true);
+	canvasContext.fill();
+}
+
+
+</script>
+</html>
